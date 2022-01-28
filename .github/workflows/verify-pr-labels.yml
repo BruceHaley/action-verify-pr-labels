@@ -1,4 +1,4 @@
-name: verify-pr-labels.yml
+name: verify-pr-labels-avpl.yml
 
 on:
   pull_request_target:
