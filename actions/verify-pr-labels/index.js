@@ -51,41 +51,14 @@ const getPullRequestNumber = (ref) => {
 
     if (prLabels.length > 0) {
       core.info(`Pull Request has at least a label. All good!`);
-      if (
-        lastReviewFromActionsBot &&
-        lastReviewFromActionsBot.state !== 'DISMISSED'
-      ) {
-        await octokit.pulls.dismissReview({
-          owner,
-          repo,
-          pull_number: prNumber,
-          review_id: lastReviewFromActionsBot.id,
-          message: 'All good!',
-        });
-      }
-      return;
     }
-
-    if (
-      lastReviewFromActionsBot &&
-      lastReviewFromActionsBot.state === 'CHANGES_REQUESTED'
-    ) {
-      core.info(`Skipping REQUEST_CHANGES review`);
-      return;
+    else
+    {
+      core.info(`Required is at least one of these labels: `);
+      return 1;
     }
-
-    const reviewMessage = `👋 Hi,
-this is a reminder message for maintainers to assign a proper label to this Pull Request.
-
-The bot will dismiss the review as soon as at least one label has been assigned to the Pull Request.
-Thanks.`;
-    await octokit.pulls.createReview({
-      owner,
-      repo,
-      pull_number: prNumber,
-      body: reviewMessage,
-      event: 'REQUEST_CHANGES',
-    });
+    
+    return 0;
   } catch (error) {
     await core.setFailed(error.stack || error.message);
   }

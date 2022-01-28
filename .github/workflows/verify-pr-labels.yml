@@ -1,4 +1,4 @@
-name: Verify Pull Request Labels main.yml
+name: Verify Pull Request Labels
 
 on:
   pull_request:
@@ -19,7 +19,7 @@ jobs:
         with:
           working-directory: actions/verify-pr-labels
 
-      - name: Verify Pull Request Labels main.yml 2
+      - name: Verify Pull Request Labels
         uses: ./actions/verify-pr-labels/
         with:
           github-token: '${{ secrets.GITHUB_TOKEN }}'
