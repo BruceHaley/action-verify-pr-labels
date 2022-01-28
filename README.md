@@ -1,4 +1,4 @@
-# Verify Pull Request Labels
+# Verify Pull Request Labels XXX
 
 This is a GitHub Action to verify that at least one label is assigned to a Pull Request.
 
