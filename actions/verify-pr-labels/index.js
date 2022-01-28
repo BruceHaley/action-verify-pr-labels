@@ -51,7 +51,7 @@ const getPullRequestNumber = (ref) => {
     const labelTargetingRepo = prValidLabels.find(element => {
       var splitString = element.split(' ');
       var lastWord = splitString[splitString.length - 1];
-      if ( repo.includes(lastWord.toLower())) {
+      if ( repo.toLowerCase().includes(lastWord.toLowerCase())) {
         return true;
       }
     });
