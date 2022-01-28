@@ -17,6 +17,8 @@ const getPullRequestNumber = (ref) => {
     const gitHubToken = core.getInput('github-token', { required: true });
     const octokit = new github.getOctokit(gitHubToken);
 
+    const validLabels = ["enhancement","label 2","label 3"];
+
     const getPrLabels = async (prNumber) => {
       const { data } = await octokit.pulls.get({
         pull_number: prNumber,
@@ -32,30 +34,23 @@ const getPullRequestNumber = (ref) => {
     const prLabels = await getPrLabels(prNumber);
     core.debug(`Found PR labels: ${prLabels.toString()}`);
 
-    const reviews = await octokit.pulls.listReviews({
-      owner,
-      repo,
-      pull_number: prNumber,
-    });
-    const allReviewsFromActionsBot = reviews.data.filter(
-      (review) => review.user.login === 'github-actions[bot]'
-    );
-    const lastReviewFromActionsBot =
-      allReviewsFromActionsBot.length > 0 &&
-      allReviewsFromActionsBot[allReviewsFromActionsBot.length - 1];
-    core.debug(
-      `Last review from actions bot: ${JSON.stringify(
-        lastReviewFromActionsBot
-      )}`
-    );
+    var prValidLabels = new Array();
 
-    if (prLabels.length > 0) {
-      core.info(`Pull Request has at least a label...`);
+    foreach (label in prLabels)
+    {
+      if (validLabels.includes(label))
+      {
+        prValidLabels.push(label);
+      }
+    }
+    
+    if (prValidLabels.length > 0) {
+      core.info(`Pull Request has at least one valid label.`);
     }
     else
     {
-      core.info(`Required is at least one of these labels: `);
-      throw "Label needed.";
+      core.info(`Required is one or more of these labels: ` + validLabels.toString());
+      throw "no labels";
     }
 
     return 0;
