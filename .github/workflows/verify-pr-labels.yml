@@ -13,3 +13,5 @@ jobs:
       - uses: BruceHaley/action-verify-pr-labels@master
         with:
           github-token: '${{ secrets.GITHUB_TOKEN }}'
+          node-version: '14'
+      - run: yarn
