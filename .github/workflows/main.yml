@@ -20,6 +20,6 @@ jobs:
           working-directory: actions
 
       - name: Verify Pull Request Labels main.yml 2
-        uses: ./
+        uses: ./actions/
         with:
           github-token: '${{ secrets.GITHUB_TOKEN }}'
