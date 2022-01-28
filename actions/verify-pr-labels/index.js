@@ -17,7 +17,7 @@ const getPullRequestNumber = (ref) => {
     const gitHubToken = core.getInput('github-token', { required: true });
     const octokit = new github.getOctokit(gitHubToken);
 
-    const validLabels = ["enhancement","label 2","label 3"];
+    const validLabels = ["enhancement","label 2","label 3","lets target labels"];
 
     const getPrLabels = async (prNumber) => {
       const { data } = await octokit.pulls.get({
