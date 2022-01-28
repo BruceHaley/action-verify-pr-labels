@@ -50,12 +50,12 @@ const getPullRequestNumber = (ref) => {
     );
 
     if (prLabels.length > 0) {
-      core.info(`Pull Request has at least a label.`);
+      core.info(`Pull Request has at least a label...`);
     }
     else
     {
       core.info(`Required is at least one of these labels: `);
-      return 1;
+      throw "Label needed.";
     }
 
     return 0;
