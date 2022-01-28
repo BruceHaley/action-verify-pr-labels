@@ -34,16 +34,9 @@ const getPullRequestNumber = (ref) => {
     const prLabels = await getPrLabels(prNumber);
     core.debug(`Found PR labels: ${prLabels.toString()}`);
 
-    var prValidLabels = new Array();
+    // Check which of the label in the pull request, are in the list of valid labels
+    const prValidLabels = prLabels.filter(value => validLabels.includes(value));
 
-    foreach (label in prLabels)
-    {
-      if (validLabels.includes(label))
-      {
-        prValidLabels.push(label);
-      }
-    }
-    
     if (prValidLabels.length > 0) {
       core.info(`Pull Request has at least one valid label.`);
     }
