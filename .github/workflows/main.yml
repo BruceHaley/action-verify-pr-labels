@@ -16,6 +16,8 @@ jobs:
 
       - name: Install github actions dependencies
         uses: bahmutov/npm-install@v1.6.2
+        with:
+          working-directory: actions
 
       - name: Verify Pull Request Labels main.yml 2
         uses: ./
