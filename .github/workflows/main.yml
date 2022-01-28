@@ -17,9 +17,9 @@ jobs:
       - name: Install github actions dependencies
         uses: bahmutov/npm-install@v1.6.2
         with:
-          working-directory: actions
+          working-directory: actions/verify-pr-labels
 
       - name: Verify Pull Request Labels main.yml 2
-        uses: ./actions/
+        uses: ./actions/verify-pr-labels/
         with:
           github-token: '${{ secrets.GITHUB_TOKEN }}'
