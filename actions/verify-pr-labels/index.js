@@ -42,7 +42,7 @@ const getPullRequestNumber = (ref) => {
     }
     else
     {
-      core.info(`Required is one or more of these labels: ` + validLabels.toString());
+      core.info(`Required is one or more of these labels: ` + validLabels);
       throw "no labels";
     }
 
