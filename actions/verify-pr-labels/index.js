@@ -40,10 +40,28 @@ const getPullRequestNumber = (ref) => {
     if (prValidLabels.length > 0) {
       core.info(`Pull Request has at least one valid label.`);
     }
-    else
-    {
-      core.info(`Required is one or more of these labels: ` + validLabels);
+    else {
+      core.info(`Required is at least one of these labels: ` + validLabels.join(', '));
       throw "no labels";
+    }
+
+    // Check whether a validated label targets this repo.
+    const labelTargetingRepo = prValidLabels.find(element => {
+      var splitString = element.split(' ');
+      var lastWord = splitString[splitString.length - 1];
+      if ( repo.toLower().includes(lastWord.toLower())) {
+        return true;
+      }
+    });
+
+    core.info(`Required is at least one of these labels: ` + validLabels.join(', '));
+
+    if (labelTargetingRepo == null) {
+      core.info(`No labels target this repo: ` + repo);
+    }
+    else {
+      core.info(`Forbidden label: This label targets this repo: ` + labelTargetingRepo);
+      throw "forbidden label";
     }
 
     return 0;
