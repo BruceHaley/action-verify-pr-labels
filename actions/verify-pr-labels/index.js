@@ -46,10 +46,12 @@ const getPullRequestNumber = (ref) => {
     }
 
     // Check whether a validated label targets this repo.
+    core.info(`this repo: ` + repo);
+
     const labelTargetingRepo = prValidLabels.find(element => {
       var splitString = element.split(' ');
       var lastWord = splitString[splitString.length - 1];
-      if ( repo.toLower().includes(lastWord.toLower())) {
+      if ( repo.includes(lastWord.toLower())) {
         return true;
       }
     });
