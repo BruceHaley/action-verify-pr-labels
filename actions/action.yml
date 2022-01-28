@@ -1,4 +1,4 @@
-name: 'Verify Pull Request Labels'
+name: 'Verify Pull Request Labels action.yml'
 description: 'Verify that the Pull Request has at least one valid label'
 inputs:
   github-token:

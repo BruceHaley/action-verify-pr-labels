@@ -1,4 +1,4 @@
-name: Verify Pull Request Labels
+name: Verify Pull Request Labels main.yml
 
 on:
   pull_request:
@@ -16,8 +16,10 @@ jobs:
 
       - name: Install github actions dependencies
         uses: bahmutov/npm-install@v1.6.2
+        with:
+          working-directory: actions
 
-      - name: Verify Pull Request Labels
+      - name: Verify Pull Request Labels main.yml 2
         uses: ./
         with:
           github-token: '${{ secrets.GITHUB_TOKEN }}'
