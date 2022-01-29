@@ -84,7 +84,7 @@ const getPullRequestNumber = (ref) => {
       core.info(`OK: No labels target this repo.`);
     }
     else {
-      core.error(`Forbidden label: This parity label targets this repo: ${labelTargetingRepo}`);
+      core.error(`This parity label is not allowed because it targets this repo: ${labelTargetingRepo}`);
       throw `forbidden label`;
     }
 
