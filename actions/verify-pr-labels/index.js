@@ -1,10 +1,12 @@
-const core = require('@actions/core');
-const github = require('@actions/github');
+// This validates parity labels for a PR.
+
+const core = require(`@actions/core`);
+const github = require(`@actions/github`);
 
 const getPullRequestNumber = (ref) => {
   core.debug(`Parsing ref: ${ref}`);
   // This assumes that the ref is in the form of `refs/pull/:prNumber/merge`
-  const prNumber = ref.replace(/refs\/pull\/(\d+)\/merge/, '$1');
+  const prNumber = ref.replace(/refs\/pull\/(\d+)\/merge/, `$1`);
   return parseInt(prNumber, 10);
 };
 
@@ -14,10 +16,17 @@ const getPullRequestNumber = (ref) => {
     const repo = github.context.repo.repo;
     const ref = github.context.ref;
     const prNumber = github.context.issue.number || getPullRequestNumber(ref);
-    const gitHubToken = core.getInput('github-token', { required: true });
+    const gitHubToken = core.getInput(`github-token`, { required: true });
     const octokit = new github.getOctokit(gitHubToken);
 
-    const validLabels = ["enhancement","label 2","label 3","lets target labels"];
+    const validLabels = [
+      `Automation: No parity`, 
+      `Automation: Parity all`, 
+      `Automation: Parity with dotnet`, 
+      `Automation: Parity with Java`, 
+      `Automation: Parity with JS`, 
+      `Automation: Parity with Python`,
+      `Automation: Parity with Labels`];
 
     const getPrLabels = async (prNumber) => {
       const { data } = await octokit.pulls.get({
@@ -34,36 +43,49 @@ const getPullRequestNumber = (ref) => {
     const prLabels = await getPrLabels(prNumber);
     core.debug(`Found PR labels: ${prLabels.toString()}`);
 
-    // Check which of the label in the pull request, are in the list of valid labels
+    // Get the valid labels in this pull request.
     const prValidLabels = prLabels.filter(value => validLabels.includes(value));
 
     if (prValidLabels.length > 0) {
-      core.info(`Pull Request has at least one valid label.`);
+      core.info(`OK: Pull Request has at least one valid label.`);
     }
     else {
-      core.info(`Required is at least one of these labels: ` + validLabels.join(', '));
-      throw "no labels";
+      core.error(`Required is at least one of these labels: ${validLabels.join(`, `)}`);
+      throw `no labels`;
     }
 
-    // Check whether a validated label targets this repo.
-    // core.info(`this repo: ` + repo);
+    // Ensure no other parity labels accompany a `no parity` label.
+    const parityLabelConflict = prValidLabels.find(element => {
+      if ( element.toLowerCase().includes(`no parity`) && prValidLabels.len > 1) {
+        return true;
+      }
+    });
 
+    if (parityLabelConflict == null) {
+      core.info(`OK: No parity label conflict.`);
+    }
+    else {
+      core.error(`A "no parity" label must not accompany other parity labels: ${validLabels.join(`, `)}`);
+      throw `parity label conflict`;
+    }
+
+    // Ensure a validated label does not target this repo.
+    // Example: For a PR in the repo botbuilder-js, label `Automation: Parity with JS` is forbidden.
+    // This checks that the repo name does not contain the label`s last word.
     const labelTargetingRepo = prValidLabels.find(element => {
-      var splitString = element.split(' ');
+      var splitString = element.split(` `);
       var lastWord = splitString[splitString.length - 1];
       if ( repo.toLowerCase().includes(lastWord.toLowerCase())) {
         return true;
       }
     });
 
-    core.info(`Required is at least one of these labels: ` + validLabels.join(', '));
-
     if (labelTargetingRepo == null) {
-      core.info(`No labels target this repo: ` + repo);
+      core.info(`OK: No labels target this repo.`);
     }
     else {
-      core.info(`Forbidden label: This label targets this repo: ` + labelTargetingRepo);
-      throw "forbidden label";
+      core.error(`Forbidden label: This parity label targets this repo: ${labelTargetingRepo}`);
+      throw `forbidden label`;
     }
 
     return 0;
