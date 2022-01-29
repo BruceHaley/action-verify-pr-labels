@@ -56,7 +56,7 @@ const getPullRequestNumber = (ref) => {
 
     // Ensure no other parity labels accompany a `no parity` label.
     const parityLabelConflict = prValidLabels.find(element => {
-      if ( element.toLowerCase().includes(`no parity`) && prValidLabels.len > 1) {
+      if ( element.toLowerCase().includes(`no parity`) && prValidLabels.len() > 1) {
         return true;
       }
     });
