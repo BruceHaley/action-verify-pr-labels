@@ -47,7 +47,7 @@ const getPullRequestNumber = (ref) => {
     const prValidLabels = prLabels.filter(value => validLabels.includes(value));
 
     if (prValidLabels.length > 0) {
-      core.info(`OK: Pull Request has at least one valid parity label.`);
+      core.info(`OK: Pull Request has at least one parity label.`);
     }
     else {
       core.error(`Required is at least one of these labels: ${validLabels.join(`, `)}`);
@@ -60,8 +60,6 @@ const getPullRequestNumber = (ref) => {
         return true;
       }
     });
-
-    core.info(`parityLabelConflict: ${parityLabelConflict}`);
 
     if (parityLabelConflict == null) {
       core.info(`OK: No parity label conflict.`);
